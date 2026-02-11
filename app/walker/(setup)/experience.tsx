@@ -2,14 +2,14 @@ import { Colors } from "@/constants/theme";
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import {
-  KeyboardAvoidingView,
-  Platform,
-  ScrollView,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-  Alert,
+    Alert,
+    KeyboardAvoidingView,
+    Platform,
+    ScrollView,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    View,
 } from "react-native";
 
 interface ExperienceLevel {
@@ -41,14 +41,18 @@ const ExperienceLevelButton = ({
       style={{
         borderWidth: selected ? 2 : 1,
         borderColor: selected ? Colors.walker.primary : "#D1D5DB",
-        backgroundColor: selected ? `${Colors.walker.primary}1A` : "transparent",
+        backgroundColor: selected
+          ? `${Colors.walker.primary}1A`
+          : "transparent",
       }}
       accessibilityRole="radio"
       accessibilityState={{ selected }}
       accessibilityLabel={`${level.label} - ${level.desc}`}
       activeOpacity={0.7}
     >
-      <Text className="font-semibold text-base mb-1 text-gray-900">{level.label}</Text>
+      <Text className="font-semibold text-base mb-1 text-gray-900">
+        {level.label}
+      </Text>
       <Text className="text-gray-600 text-sm">{level.desc}</Text>
     </TouchableOpacity>
   );
@@ -100,7 +104,10 @@ export default function Experience() {
           {/* Progress Indicator */}
           <View className="flex-row items-center mb-8 space-x-2">
             <View className="flex-1 h-2 rounded-full bg-gray-200" />
-            <View className={`flex-1 h-2 rounded-full`} style={{ backgroundColor: Colors.walker.primary }} />
+            <View
+              className={`flex-1 h-2 rounded-full`}
+              style={{ backgroundColor: Colors.walker.primary }}
+            />
             <View className="flex-1 h-2 rounded-full bg-gray-200" />
             <View className="flex-1 h-2 rounded-full bg-gray-200" />
           </View>
@@ -111,7 +118,9 @@ export default function Experience() {
           <View className="space-y-4">
             {/* About You */}
             <View>
-              <Text className="text-sm font-medium text-gray-700 mb-2">About You</Text>
+              <Text className="text-sm font-medium text-gray-700 mb-2">
+                About You
+              </Text>
               <TextInput
                 className="border border-gray-300 rounded-xl px-4 py-3 text-base min-h-[100px] text-gray-900"
                 placeholder="Tell dog owners about yourself..."
@@ -129,7 +138,9 @@ export default function Experience() {
 
             {/* Experience with Dogs */}
             <View>
-              <Text className="text-sm font-medium text-gray-700 mb-2">Experience with Dogs</Text>
+              <Text className="text-sm font-medium text-gray-700 mb-2">
+                Experience with Dogs
+              </Text>
               <TextInput
                 className="border border-gray-300 rounded-xl px-4 py-3 text-base min-h-[100px] text-gray-900"
                 placeholder="Describe your experience..."
@@ -147,7 +158,9 @@ export default function Experience() {
 
             {/* Experience Level */}
             <View>
-              <Text className="text-sm font-medium text-gray-700 mb-3">Experience Level</Text>
+              <Text className="text-sm font-medium text-gray-700 mb-3">
+                Experience Level
+              </Text>
               <View className="space-y-3" accessibilityRole="radiogroup">
                 {EXPERIENCE_LEVELS.map((level, index) => (
                   <ExperienceLevelButton
