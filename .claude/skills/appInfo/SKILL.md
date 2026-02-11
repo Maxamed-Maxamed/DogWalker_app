@@ -39,7 +39,7 @@ metadata:
 
 ### Complete File Structure
 
-```
+```text
 app/
 │
 ├── _layout.tsx                          # Root layout (theme provider, fonts)
@@ -119,7 +119,7 @@ app/
 
 #### 1️⃣ App Launch Flow
 
-```
+```text
 app/index.tsx
 ├── Check AsyncStorage for 'userRole'
 ├── Check authentication status
@@ -149,7 +149,7 @@ app/index.tsx
 
 #### 2️⃣ Dog Owner Complete Flow
 
-```
+```text
 /role-selection
     │ User taps "I'm a Dog Owner"
     │ Save: AsyncStorage.setItem('userRole', 'owner')
@@ -189,7 +189,7 @@ app/index.tsx
 
 #### 3️⃣ Dog Walker Complete Flow
 
-```
+```text
 /role-selection
     │ User taps "I'm a Dog Walker"
     │ Save: AsyncStorage.setItem('userRole', 'walker')
@@ -339,7 +339,7 @@ Route groups in Expo Router allow you to organize files without affecting the UR
 
 **Example:**
 
-```
+```text
 app/owner/(auth)/login.tsx → URL: /owner/login
 app/owner/(tabs)/home.tsx  → URL: /owner/home
 ```
@@ -357,16 +357,18 @@ The `(auth)` and `(tabs)` don't appear in the URL!
 #### What to store in AsyncStorage:
 
 ```typescript
-// User role
+import * as SecureStore from "expo-secure-store";
+
+// User role (non-sensitive)
 AsyncStorage.setItem("userRole", "owner" | "walker");
 
-// Auth token
-AsyncStorage.setItem("authToken", token);
+// Auth token (sensitive)
+await SecureStore.setItemAsync("authToken", token);
 
-// Profile completion status
+// Profile completion status (non-sensitive)
 AsyncStorage.setItem("profileComplete", "true" | "false");
 
-// User ID
+// User ID (non-sensitive)
 AsyncStorage.setItem("userId", userId);
 ```
 
@@ -374,53 +376,91 @@ AsyncStorage.setItem("userId", userId);
 
 ```typescript
 // app/index.tsx
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { ActivityIndicator, Text, View } from "react-native";
 import { useRouter } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as SecureStore from "expo-secure-store";
+
+const VALID_ROLES = ["owner", "walker"] as const;
+type UserRole = (typeof VALID_ROLES)[number];
 
 export default function Index() {
   const router = useRouter();
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    checkAndNavigate();
-  }, []);
+    let isMounted = true;
 
-  async function checkAndNavigate() {
-    const userRole = await AsyncStorage.getItem("userRole");
-    const authToken = await AsyncStorage.getItem("authToken");
-    const profileComplete = await AsyncStorage.getItem("profileComplete");
+    const checkAndNavigate = async () => {
+      try {
+        const rawRole = await AsyncStorage.getItem("userRole");
+        const authToken = await SecureStore.getItemAsync("authToken");
+        const profileComplete = await AsyncStorage.getItem("profileComplete");
 
-    // No role selected - first time user
-    if (!userRole) {
-      router.replace("/role-selection");
-      return;
-    }
+        const role: UserRole | null = VALID_ROLES.includes(rawRole as UserRole)
+          ? (rawRole as UserRole)
+          : null;
 
-    // Owner path
-    if (userRole === "owner") {
-      if (!authToken) {
-        router.replace("/owner/splash");
-      } else if (profileComplete !== "true") {
-        router.replace("/owner/(setup)/personal-info");
-      } else {
-        router.replace("/owner/(tabs)/home");
+        if (!role) {
+          router.replace("/role-selection");
+          return;
+        }
+
+        if (role === "owner") {
+          if (!authToken) {
+            router.replace("/owner/splash");
+          } else if (profileComplete !== "true") {
+            router.replace("/owner/(setup)/personal-info");
+          } else {
+            router.replace("/owner/(tabs)/home");
+          }
+          return;
+        }
+
+        if (!authToken) {
+          router.replace("/walker/splash");
+        } else if (profileComplete !== "true") {
+          router.replace("/walker/(setup)/personal-info");
+        } else {
+          router.replace("/walker/(tabs)/home");
+        }
+      } catch (err) {
+        console.error("Navigation check failed:", err);
+        setError("Failed to load app. Please restart.");
+        router.replace("/role-selection");
       }
-      return;
-    }
+    };
 
-    // Walker path
-    if (userRole === "walker") {
-      if (!authToken) {
-        router.replace("/walker/splash");
-      } else if (profileComplete !== "true") {
-        router.replace("/walker/(setup)/personal-info");
-      } else {
-        router.replace("/walker/(tabs)/home");
+    checkAndNavigate().finally(() => {
+      if (isMounted) {
+        setIsLoading(false);
       }
-    }
+    });
+
+    return () => {
+      isMounted = false;
+    };
+  }, [router]);
+
+  if (error) {
+    return (
+      <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+        <Text>{error}</Text>
+      </View>
+    );
   }
 
-  return null; // Or a loading spinner
+  if (isLoading) {
+    return (
+      <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+        <ActivityIndicator size="large" />
+      </View>
+    );
+  }
+
+  return null;
 }
 ```
 
@@ -475,7 +515,7 @@ This gives you a clean, organized structure where each role feels like its own a
 
 ### Full-Stack Developer (Expert Level)
 
-```
+```text
 ├── React Native + Expo (Expert)
 ├── TypeScript (Advanced)
 ├── Supabase + PostgreSQL (Advanced)
@@ -488,7 +528,7 @@ Time to Productivity: 2-3 weeks
 
 ### Mobile Developer (Frontend Focus)
 
-```
+```text
 ├── React Native + Expo (Expert)
 ├── TypeScript (Advanced)
 ├── UI/UX Implementation (Advanced)
@@ -501,7 +541,7 @@ Time to Productivity: 1-2 weeks
 
 ### Backend Developer
 
-```
+```text
 ├── Supabase + PostgreSQL (Expert)
 ├── TypeScript/Node.js (Advanced)
 ├── API Design (Advanced)
@@ -534,25 +574,48 @@ Time to Productivity: 1-2 weeks
 ### Authentication & Authorization
 
 ```typescript
+import * as SecureStore from "expo-secure-store";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
+const VALID_ROLES = ["owner", "walker"] as const;
+type UserRole = (typeof VALID_ROLES)[number];
+
 // ✅ Token cleanup on errors
-catch (error) {
+async function removeAuthToken() {
+  await SecureStore.deleteItemAsync("authToken");
+}
+
+async function removeUserData() {
+  await AsyncStorage.multiRemove(["userRole", "userId", "profileComplete"]);
+}
+
+async function handleAuthError(error: unknown) {
+  console.error("Auth error:", error);
   await removeAuthToken();
   await removeUserData();
   setUser(null);
 }
 
 // ✅ Role validation
-if (role === "owner" || role === "walker") {
+function isValidRole(role: string | null): role is UserRole {
+  return role !== null && VALID_ROLES.includes(role as UserRole);
+}
+
+if (isValidRole(role)) {
   return role;
 }
 return null;
 
-// ✅ Async handling
-setInterval(() => {
-  void (async () => {
-    await refreshToken();
-  })();
-}, INTERVAL);
+// ✅ Async handling with cleanup
+useEffect(() => {
+  const intervalId = setInterval(() => {
+    void (async () => {
+      await refreshToken();
+    })();
+  }, INTERVAL);
+
+  return () => clearInterval(intervalId);
+}, []);
 ```
 
 ### Document Upload Security
@@ -560,14 +623,15 @@ setInterval(() => {
 ```typescript
 // ✅ File validation
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
-const ALLOWED_TYPES = ["image/*", "application/pdf"];
+const ALLOWED_TYPES = ["image/jpeg", "image/png", "application/pdf"];
 
-// ✅ User feedback
-Alert.alert("File Too Large", "Max 10MB allowed");
+if (doc.size && doc.size > MAX_FILE_SIZE) {
+  return Alert.alert("File Too Large", "Max 10MB allowed");
+}
 
 // ✅ MIME type check
-if (!ALLOWED_TYPES.includes(doc.mimeType)) {
-  return Alert.alert("Invalid Type");
+if (!doc.mimeType || !ALLOWED_TYPES.includes(doc.mimeType)) {
+  return Alert.alert("Invalid Type", "Only JPG, PNG, and PDF allowed");
 }
 ```
 

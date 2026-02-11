@@ -84,7 +84,7 @@ export default function ForgotPassword() {
           </View>
 
           <TouchableOpacity
-            onPress={handleResetPassword}
+            onPress={() => void handleResetPassword()}
             className="rounded-full py-4 mt-8"
             style={{ backgroundColor: Colors.walker.primary }}
             activeOpacity={0.8}

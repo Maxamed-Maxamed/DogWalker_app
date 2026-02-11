@@ -18,14 +18,15 @@ export default function OwnerWalks() {
   const pulseAnim = useRef(new Animated.Value(1)).current;
 
   useEffect(() => {
-    Animated.timing(fadeAnim, {
+    const fade = Animated.timing(fadeAnim, {
       toValue: 1,
       duration: 400,
       useNativeDriver: true,
-    }).start();
+    });
+    fade.start();
 
     // Pulse animation for live tracking
-    Animated.loop(
+    const pulse = Animated.loop(
       Animated.sequence([
         Animated.timing(pulseAnim, {
           toValue: 1.15,
@@ -38,7 +39,13 @@ export default function OwnerWalks() {
           useNativeDriver: true,
         }),
       ]),
-    ).start();
+    );
+    pulse.start();
+
+    return () => {
+      fade.stop();
+      pulse.stop();
+    };
   }, []);
 
   const weekDays = [

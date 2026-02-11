@@ -27,7 +27,7 @@ const STEPS = [
       "Follow your dog's walk in real-time with GPS and get photo updates",
     color: "#8b5cf6",
   },
-];
+] as const;
 
 export default function HowItWorks() {
   const router = useRouter();
@@ -80,7 +80,7 @@ export default function HowItWorks() {
                       elevation: 4,
                     }}
                   >
-                    <Ionicons name={step.icon as any} size={28} color="white" />
+                    <Ionicons name={step.icon} size={28} color="white" />
                   </View>
                   {/* Connecting Line */}
                   {index < STEPS.length - 1 && (

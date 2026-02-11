@@ -4,6 +4,24 @@ import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import { Text, TouchableOpacity, View } from "react-native";
 
+const FEATURES = [
+  {
+    icon: "shield-checkmark",
+    title: "Verified Walkers",
+    desc: "Background-checked professionals",
+  },
+  {
+    icon: "location",
+    title: "Nearby & Available",
+    desc: "Find walkers close to you",
+  },
+  {
+    icon: "heart",
+    title: "Peace of Mind",
+    desc: "Real-time updates & GPS tracking",
+  },
+] as const;
+
 export default function Welcome() {
   const router = useRouter();
 
@@ -72,23 +90,7 @@ export default function Welcome() {
 
           {/* Feature Highlights */}
           <View className="w-full">
-            {[
-              {
-                icon: "shield-checkmark",
-                title: "Verified Walkers",
-                desc: "Background-checked professionals",
-              },
-              {
-                icon: "location",
-                title: "Nearby & Available",
-                desc: "Find walkers close to you",
-              },
-              {
-                icon: "heart",
-                title: "Peace of Mind",
-                desc: "Real-time updates & GPS tracking",
-              },
-            ].map((feature, index) => (
+            {FEATURES.map((feature, index) => (
               <View
                 key={index}
                 className="flex-row items-center mb-4 bg-white rounded-2xl p-4"
@@ -105,7 +107,7 @@ export default function Welcome() {
                   style={{ backgroundColor: Colors.owner.background }}
                 >
                   <Ionicons
-                    name={feature.icon as any}
+                    name={feature.icon}
                     size={24}
                     color={Colors.owner.primary}
                   />

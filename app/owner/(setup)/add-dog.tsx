@@ -130,7 +130,7 @@ export default function AddDog() {
 
       <View className="px-8 pb-8 bg-white border-t border-gray-200">
         <TouchableOpacity
-          onPress={handleContinue}
+          onPress={() => void handleContinue()}
           className="rounded-full py-4 mt-4"
           style={{ backgroundColor: Colors.owner.primary }}
           activeOpacity={0.8}

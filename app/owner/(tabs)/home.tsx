@@ -3,11 +3,11 @@ import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { useState } from "react";
 import {
-  ScrollView,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
+    ScrollView,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    View,
 } from "react-native";
 
 // Mock walker data with realistic details
@@ -66,7 +66,9 @@ const FEATURED_WALKERS = [
   },
 ];
 
-const QUICK_FILTERS = [
+type IoniconName = keyof typeof Ionicons.glyphMap;
+
+const QUICK_FILTERS: { label: string; icon: IoniconName }[] = [
   { label: "Available Now", icon: "time-outline" },
   { label: "Top Rated", icon: "star" },
   { label: "Nearby", icon: "location" },
@@ -157,7 +159,7 @@ export default function OwnerHome() {
                 activeOpacity={0.7}
               >
                 <Ionicons
-                  name={filter.icon as any}
+                  name={filter.icon}
                   size={18}
                   color={
                     selectedFilter === filter.label

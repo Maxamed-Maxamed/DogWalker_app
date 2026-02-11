@@ -64,7 +64,7 @@ export default function GetStarted() {
 
       <View className="px-8 pb-12">
         <TouchableOpacity
-          onPress={handleGetStarted}
+          onPress={() => void handleGetStarted()}
           className="rounded-full py-4"
           style={{ backgroundColor: Colors.walker.primary }}
           activeOpacity={0.8}

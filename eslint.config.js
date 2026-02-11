@@ -1,29 +1,44 @@
 // eslint.config.js
 // https://docs.expo.dev/guides/using-eslint/
-import { defineConfig } from 'eslint/config';
-import expoConfig from 'eslint-config-expo/flat';
-import tseslint from 'typescript-eslint';
-import importPlugin from 'eslint-plugin-import';
+import expoConfig from "eslint-config-expo/flat.js";
+import importPlugin from "eslint-plugin-import";
+import { defineConfig } from "eslint/config";
+import tseslint from "typescript-eslint";
 
 export default defineConfig([
   expoConfig,
   {
-    ignores: ['dist/*'],
+    ignores: ["dist/*"],
   },
   {
-    files: ['**/*.{ts,tsx}'],
+    files: [
+      "**/*.config.js",
+      "babel.config.js",
+      "metro.config.js",
+      "tailwind.config.js",
+    ],
+    languageOptions: {
+      globals: {
+        __dirname: "readonly",
+        module: "readonly",
+        require: "readonly",
+      },
+    },
+  },
+  {
+    files: ["**/*.{ts,tsx}"],
     plugins: {
       import: importPlugin,
-      '@typescript-eslint': tseslint.plugin,
+      "@typescript-eslint": tseslint.plugin,
     },
     rules: {
-      'import/no-unresolved': 'error',
+      "import/no-unresolved": "error",
     },
     settings: {
-      'import/resolver': {
+      "import/resolver": {
         typescript: {
           alwaysTryTypes: true,
-          project: './tsconfig.json',
+          project: "./tsconfig.json",
         },
       },
     },

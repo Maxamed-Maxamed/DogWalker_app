@@ -149,7 +149,7 @@ export default function WalkerProfile() {
 
         {/* Logout Button */}
         <TouchableOpacity
-          onPress={handleLogout}
+          onPress={() => void handleLogout()}
           className="border border-red-500 rounded-xl p-4 items-center mb-8"
         >
           <Text className="text-red-500 font-semibold text-base">Log Out</Text>

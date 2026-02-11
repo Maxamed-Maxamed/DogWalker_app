@@ -166,7 +166,7 @@ export default function Experience() {
       {/* Continue Button */}
       <View className="px-8 pb-8 bg-white border-t border-gray-200">
         <TouchableOpacity
-          onPress={handleContinue}
+          onPress={() => void handleContinue()}
           className={`rounded-full py-4 mt-4 ${loading ? "opacity-70" : ""}`}
           style={{ backgroundColor: Colors.walker.primary }}
           activeOpacity={0.8}

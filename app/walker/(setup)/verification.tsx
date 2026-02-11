@@ -223,7 +223,7 @@ export default function Verification() {
                   accessibilityRole="button"
                   accessibilityLabel="Upload government ID"
                   activeOpacity={0.7}
-                  onPress={handleDocumentPick}
+                  onPress={() => void handleDocumentPick()}
                   disabled={isUploadingDoc}
                 >
                   {isUploadingDoc ? (
@@ -354,7 +354,7 @@ export default function Verification() {
 
       <View className="px-8 pb-8 bg-white border-t border-gray-200">
         <TouchableOpacity
-          onPress={handleSubmit}
+          onPress={() => void handleSubmit()}
           className="rounded-full py-4 mt-4"
           style={{ backgroundColor: Colors.walker.primary }}
           activeOpacity={0.8}

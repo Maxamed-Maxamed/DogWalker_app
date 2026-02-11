@@ -87,7 +87,7 @@ export default function Signup() {
           </View>
 
           <TouchableOpacity
-            onPress={handleSignup}
+            onPress={() => void handleSignup()}
             className="rounded-full py-4 mt-8"
             style={{ backgroundColor: Colors.owner.primary }}
             activeOpacity={0.8}

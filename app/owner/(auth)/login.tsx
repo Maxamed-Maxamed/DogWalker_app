@@ -84,7 +84,7 @@ export default function Login() {
           </TouchableOpacity>
 
           <TouchableOpacity
-            onPress={handleLogin}
+            onPress={() => void handleLogin()}
             className="rounded-full py-4 mt-8"
             style={{ backgroundColor: Colors.owner.primary }}
             activeOpacity={0.8}

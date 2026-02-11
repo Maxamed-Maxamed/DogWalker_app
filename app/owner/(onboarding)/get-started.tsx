@@ -4,7 +4,7 @@ import { saveOnboardingCompleted } from "@/utils/storage";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import { useEffect, useRef } from "react";
-import { Animated, Text, TouchableOpacity, View } from "react-native";
+import { Alert, Animated, Text, TouchableOpacity, View } from "react-native";
 
 export default function GetStarted() {
   const router = useRouter();
@@ -40,8 +40,13 @@ export default function GetStarted() {
   });
 
   const handleGetStarted = async () => {
-    await saveOnboardingCompleted("owner");
-    router.replace("/owner/(auth)/signup");
+    try {
+      await saveOnboardingCompleted("owner");
+      router.replace("/owner/(auth)/signup");
+    } catch (error) {
+      console.error("Failed to save onboarding status:", error);
+      Alert.alert("Something went wrong", "Please try again in a moment.");
+    }
   };
 
   return (
@@ -114,7 +119,7 @@ export default function GetStarted() {
       {/* Bottom Actions */}
       <View className="px-8 pb-12">
         <TouchableOpacity
-          onPress={handleGetStarted}
+          onPress={() => void handleGetStarted()}
           className="rounded-full py-4"
           style={{
             backgroundColor: Colors.owner.primary,
