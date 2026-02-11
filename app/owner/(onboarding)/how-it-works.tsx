@@ -2,9 +2,18 @@ import { Colors } from "@/constants/theme";
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
+import { ComponentProps } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 
-const STEPS = [
+type IoniconName = ComponentProps<typeof Ionicons>["name"];
+
+const STEPS: {
+  number: number;
+  icon: IoniconName;
+  title: string;
+  description: string;
+  color: string;
+}[] = [
   {
     number: 1,
     icon: "search",
@@ -27,7 +36,7 @@ const STEPS = [
       "Follow your dog's walk in real-time with GPS and get photo updates",
     color: "#8b5cf6",
   },
-] as const;
+];
 
 export default function HowItWorks() {
   const router = useRouter();

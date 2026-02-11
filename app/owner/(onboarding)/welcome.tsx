@@ -2,9 +2,12 @@ import { Colors } from "@/constants/theme";
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
+import { ComponentProps } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 
-const FEATURES = [
+type IoniconName = ComponentProps<typeof Ionicons>["name"];
+
+const FEATURES: { icon: IoniconName; title: string; desc: string }[] = [
   {
     icon: "shield-checkmark",
     title: "Verified Walkers",
@@ -20,7 +23,7 @@ const FEATURES = [
     title: "Peace of Mind",
     desc: "Real-time updates & GPS tracking",
   },
-] as const;
+];
 
 export default function Welcome() {
   const router = useRouter();

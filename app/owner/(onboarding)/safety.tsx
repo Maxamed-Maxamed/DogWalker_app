@@ -7,59 +7,36 @@ import { Animated, Text, TouchableOpacity, View } from "react-native";
 export default function Safety() {
   const router = useRouter();
 
-  // Animation values for each safety feature
-  const fadeAnim1 = useRef(new Animated.Value(0)).current;
-  const fadeAnim2 = useRef(new Animated.Value(0)).current;
-  const fadeAnim3 = useRef(new Animated.Value(0)).current;
-
-  const slideAnim1 = useRef(new Animated.Value(50)).current;
-  const slideAnim2 = useRef(new Animated.Value(50)).current;
-  const slideAnim3 = useRef(new Animated.Value(50)).current;
+  // Animation values for each safety feature (simplified from individual refs)
+  const fadeAnims = useRef([0, 1, 2].map(() => new Animated.Value(0))).current;
+  const slideAnims = useRef(
+    [0, 1, 2].map(() => new Animated.Value(50))
+  ).current;
 
   useEffect(() => {
     // Stagger the animations for a cascading effect
-    Animated.stagger(150, [
-      Animated.parallel([
-        Animated.timing(fadeAnim1, {
-          toValue: 1,
-          duration: 500,
-          useNativeDriver: true,
-        }),
-        Animated.spring(slideAnim1, {
-          toValue: 0,
-          friction: 8,
-          tension: 40,
-          useNativeDriver: true,
-        }),
-      ]),
-      Animated.parallel([
-        Animated.timing(fadeAnim2, {
-          toValue: 1,
-          duration: 500,
-          useNativeDriver: true,
-        }),
-        Animated.spring(slideAnim2, {
-          toValue: 0,
-          friction: 8,
-          tension: 40,
-          useNativeDriver: true,
-        }),
-      ]),
-      Animated.parallel([
-        Animated.timing(fadeAnim3, {
-          toValue: 1,
-          duration: 500,
-          useNativeDriver: true,
-        }),
-        Animated.spring(slideAnim3, {
-          toValue: 0,
-          friction: 8,
-          tension: 40,
-          useNativeDriver: true,
-        }),
-      ]),
-    ]).start();
-  }, []);
+    const animation = Animated.stagger(
+      150,
+      fadeAnims.map((fade, i) =>
+        Animated.parallel([
+          Animated.timing(fade, {
+            toValue: 1,
+            duration: 500,
+            useNativeDriver: true,
+          }),
+          Animated.spring(slideAnims[i], {
+            toValue: 0,
+            friction: 8,
+            tension: 40,
+            useNativeDriver: true,
+          }),
+        ])
+      )
+    );
+    animation.start();
+
+    return () => animation.stop();
+  }, [fadeAnims, slideAnims]);
 
   const safetyFeatures = [
     {
@@ -67,22 +44,22 @@ export default function Safety() {
       title: "Verified Walkers",
       description:
         "Background checks and identity verification for all walkers",
-      fadeAnim: fadeAnim1,
-      slideAnim: slideAnim1,
+      fadeAnim: fadeAnims[0],
+      slideAnim: slideAnims[0],
     },
     {
       iconId: "41445", // Map Pin/GPS icon from Icons8 (ios7)
       title: "Live GPS Tracking",
       description: "Real-time location tracking during every walk",
-      fadeAnim: fadeAnim2,
-      slideAnim: slideAnim2,
+      fadeAnim: fadeAnims[1],
+      slideAnim: slideAnims[1],
     },
     {
       iconId: "74241", // Insurance/Document icon from Icons8 (ios7)
       title: "Insurance Protection",
       description: "Comprehensive coverage for every walk",
-      fadeAnim: fadeAnim3,
-      slideAnim: slideAnim3,
+      fadeAnim: fadeAnims[2],
+      slideAnim: slideAnims[2],
     },
   ];
 

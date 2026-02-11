@@ -18,11 +18,18 @@ import { Image, ImageStyle, StyleProp } from "react-native";
  * - Search: "132" (ios7)
  */
 
+type Icons8Platform =
+  | "ios7"
+  | "ios11"
+  | "ios_filled"
+  | "fluent-systems-regular"
+  | "color";
+
 interface Icons8IconProps {
   iconId: string;
   size?: number;
   color?: string;
-  platform?: string;
+  platform?: Icons8Platform;
   style?: StyleProp<ImageStyle>;
 }
 
