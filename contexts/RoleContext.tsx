@@ -3,23 +3,17 @@
  * Manages user role state and persistence
  */
 
+import { isValidUserRole } from "@/supabase/utils/typeGuards";
 import React, {
-  createContext,
-  ReactNode,
-  useContext,
-  useEffect,
-  useState,
-  useCallback,
+    createContext,
+    ReactNode,
+    useCallback,
+    useContext,
+    useEffect,
+    useState,
 } from "react";
 import type { UserRole } from "../types";
-import {
-  getUserRole,
-  removeUserRole,
-  saveUserRole,
-} from "../utils/storage";
-import {
-  isValidUserRole,
-} from "@/supabase/utils/typeGuards";
+import { getUserRole, removeUserRole, saveUserRole } from "../utils/storage";
 
 /**
  * Role context type definition
@@ -116,9 +110,7 @@ export function RoleProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <RoleContext.Provider value={contextValue}>
-      {children}
-    </RoleContext.Provider>
+    <RoleContext.Provider value={contextValue}>{children}</RoleContext.Provider>
   );
 }
 

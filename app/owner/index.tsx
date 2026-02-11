@@ -24,7 +24,7 @@ export default function OwnerIndex() {
       }
     };
 
-    checkStatus();
+    void checkStatus();
   }, [isAuthenticated]);
 
   return (

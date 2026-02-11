@@ -45,7 +45,10 @@ const SANITIZED_ERRORS = new Map<string, string>([
   ["invalid_request_uri", "Authentication error occurred"],
   ["User already registered", "This email is already registered"],
   ["user_exists", "This email is already registered"],
-  ["Password should be at least 6 characters", "Password must be at least 6 characters"],
+  [
+    "Password should be at least 6 characters",
+    "Password must be at least 6 characters",
+  ],
   ["password_too_short", "Password must be at least 6 characters"],
   ["Invalid JSON in session", "Session expired. Please log in again"],
   ["session_not_found", "Session expired. Please log in again"],
@@ -142,7 +145,10 @@ export function AuthProvider({ children }: AuthProviderProps) {
         }
 
         const s = session as {
-          user: { user_metadata?: SupabaseUserMetadata; [key: string]: unknown };
+          user: {
+            user_metadata?: SupabaseUserMetadata;
+            [key: string]: unknown;
+          };
           access_token: string;
           refresh_token?: string;
         };

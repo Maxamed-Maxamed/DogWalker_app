@@ -24,7 +24,7 @@ export default function WalkerIndex() {
       }
     };
 
-    checkStatus();
+    void checkStatus();
   }, [isAuthenticated]);
 
   return (
