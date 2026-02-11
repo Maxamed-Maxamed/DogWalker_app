@@ -33,7 +33,6 @@ try {
       autoRefreshToken: true,
       persistSession: true,
       detectSessionInUrl: false,
-      lock: processLock,
     },
   });
 } catch (error) {
