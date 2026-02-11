@@ -42,7 +42,7 @@ export const createEmptySchedule = (): WeeklySchedule => {
  */
 export const createOwner = (supabaseUser: unknown): Owner => {
   const u = supabaseUser as SupabaseUserData | null | undefined;
-  if (!u?.id || !u?.email) {
+  if (!u?.id || !u.email) {
     throw new Error("Invalid Supabase user object: missing id or email");
   }
 
@@ -78,7 +78,7 @@ export const createOwner = (supabaseUser: unknown): Owner => {
  */
 export const createWalker = (supabaseUser: unknown): Walker => {
   const u = supabaseUser as SupabaseUserData | null | undefined;
-    if (!u?.id || !u.email) {
+  if (!u?.id || !u.email) {
     throw new Error("Invalid Supabase user object: missing id or email");
   }
 
@@ -125,7 +125,7 @@ export const mapSupabaseUserToAppUser = (
   role: string,
 ): User => {
   const u = supabaseUser as SupabaseUserData | null | undefined;
-  if (!u?.id || !u?.email) {
+  if (!u?.id || !u.email) {
     throw new Error("Invalid Supabase user object");
   }
 
