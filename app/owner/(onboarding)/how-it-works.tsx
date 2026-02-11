@@ -33,14 +33,22 @@ export default function HowItWorks() {
   const router = useRouter();
 
   return (
-    <View className="flex-1">
+    <View style={{ flex: 1 }}>
       <LinearGradient
         colors={["#ffffff", Colors.owner.background]}
         start={{ x: 0, y: 0 }}
         end={{ x: 0, y: 1 }}
-        className="flex-1"
+        style={{ flex: 1 }}
       >
-        <View className="flex-1 justify-center px-8 pt-20 pb-8">
+        <View
+          style={{
+            flex: 1,
+            justifyContent: "center",
+            paddingHorizontal: 32,
+            paddingTop: 80,
+            paddingBottom: 32,
+          }}
+        >
           {/* Header */}
           <View className="mb-12">
             <Text

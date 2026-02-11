@@ -13,10 +13,13 @@ export default function OwnerProfile() {
   const { clearRole } = useRole();
 
   const handleLogout = async () => {
-    await logout();
-    await clearRole();
-    await clearAllData();
-    router.replace("/role-selection");
+    try {
+      await logout();
+    } finally {
+      await clearRole();
+      await clearAllData();
+      router.replace("/role-selection");
+    }
   };
 
   const stats = [
@@ -153,7 +156,11 @@ export default function OwnerProfile() {
         <View className="mb-6">
           <View className="flex-row items-center justify-between mb-4">
             <Text className="text-xl font-bold text-gray-900">My Dogs</Text>
-            <TouchableOpacity>
+            <TouchableOpacity
+              accessible
+              accessibilityRole="button"
+              accessibilityLabel="Add dog"
+            >
               <Ionicons
                 name="add-circle"
                 size={28}
@@ -192,6 +199,9 @@ export default function OwnerProfile() {
                 <TouchableOpacity
                   className="w-10 h-10 rounded-full items-center justify-center"
                   style={{ backgroundColor: Colors.owner.background }}
+                  accessible
+                  accessibilityRole="button"
+                  accessibilityLabel={`Edit ${dog.name}`}
                 >
                   <Ionicons
                     name="pencil"
@@ -282,7 +292,7 @@ export default function OwnerProfile() {
 
         {/* Logout Button */}
         <TouchableOpacity
-          onPress={handleLogout}
+          onPress={() => void handleLogout()}
           className="bg-white border-2 border-red-500 rounded-2xl p-4 items-center mb-4"
           style={{
             shadowColor: "#ef4444",

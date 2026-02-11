@@ -33,8 +33,13 @@ export function Icons8Icon({
   platform = "ios7",
   style,
 }: Icons8IconProps) {
-  // Remove # from color if present
-  const cleanColor = color.replace("#", "");
+  // Remove # from color if present and validate hex format
+  const normalizedColor = color.trim();
+  const hex = normalizedColor.startsWith("#")
+    ? normalizedColor.slice(1)
+    : normalizedColor;
+  const cleanColor =
+    hex && /^[0-9A-Fa-f]{3}([0-9A-Fa-f]{3})?$/.test(hex) ? hex : "000000";
 
   // Icons8 CDN URL format
   const url = `https://img.icons8.com/${platform}/${size}/${cleanColor}/${iconId}.png`;

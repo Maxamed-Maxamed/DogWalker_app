@@ -1,10 +1,10 @@
 ---
-name: dogwalker-platform-skills-agent
+name: appInfo
 description: Skills agent for DogWalker dual-app marketplace platform with security implementations
-type: skills-agent
-target-audience: developers, team leads, hiring managers
-version: 2.0.0
-last-updated: 2026-02-03
+metadata:
+  target-audience: developers, team leads, hiring managers
+  version: 2.0.0
+  last-updated: 2026-02-03
 ---
 
 # DogWalker Platform - Skills Agent
@@ -734,10 +734,10 @@ const [isUploading, setIsUploading] = useState(false);
 
 ### Documentation
 
-- Expo: https://docs.expo.dev
-- Supabase: https://supabase.com/docs
-- Stripe: https://stripe.com/docs
-- OWASP: https://owasp.org
+- Expo: <https://docs.expo.dev>
+- Supabase: <https://supabase.com/docs>
+- Stripe: <https://stripe.com/docs>
+- OWASP: <https://owasp.org>
 
 ### Training
 

@@ -87,8 +87,15 @@ export default function Safety() {
   ];
 
   return (
-    <View className="flex-1 bg-white">
-      <View className="flex-1 justify-center items-center px-8">
+    <View style={{ flex: 1, backgroundColor: "white" }}>
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          paddingHorizontal: 32,
+        }}
+      >
         {/* Header */}
         <View
           className="w-20 h-20 rounded-full items-center justify-center mb-6"

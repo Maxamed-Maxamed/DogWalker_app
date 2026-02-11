@@ -8,15 +8,22 @@ export default function Welcome() {
   const router = useRouter();
 
   return (
-    <View className="flex-1">
+    <View className="flex-1 ">
       {/* Gradient Background */}
       <LinearGradient
         colors={["#ffffff", Colors.owner.background]}
         start={{ x: 0, y: 0 }}
         end={{ x: 0, y: 1 }}
-        className="flex-1"
+        style={{ flex: 1 }}
       >
-        <View className="flex-1 justify-center items-center px-8">
+        <View
+          style={{
+            flex: 1,
+            justifyContent: "center",
+            alignItems: "center",
+            paddingHorizontal: 32,
+          }}
+        >
           {/* Hero Icon */}
           <View className="mb-8">
             <View

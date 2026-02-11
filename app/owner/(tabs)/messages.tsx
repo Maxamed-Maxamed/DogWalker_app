@@ -1,6 +1,6 @@
 import { Colors } from "@/constants/theme";
 import { Ionicons } from "@expo/vector-icons";
-import { useState } from "react";
+import { useState, type ComponentProps } from "react";
 import {
     ScrollView,
     Text,
@@ -11,8 +11,18 @@ import {
 
 export default function OwnerMessages() {
   const [searchQuery, setSearchQuery] = useState("");
+  type IoniconName = ComponentProps<typeof Ionicons>["name"];
+  type Conversation = {
+    id: number;
+    walker: string;
+    lastMessage: string;
+    time: string;
+    unread: number;
+    online: boolean;
+    avatar: IoniconName;
+  };
 
-  const conversations = [
+  const conversations: Conversation[] = [
     {
       id: 1,
       walker: "Sarah Johnson",
@@ -115,7 +125,7 @@ export default function OwnerMessages() {
                     }}
                   >
                     <Ionicons
-                      name={conv.avatar as any}
+                      name={conv.avatar}
                       size={28}
                       color={Colors.owner.primary}
                     />

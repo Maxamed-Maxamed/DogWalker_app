@@ -42,11 +42,11 @@ export default function OwnerWalks() {
   }, []);
 
   const weekDays = [
-    { day: "Mon", date: 20, isToday: false },
-    { day: "Tue", date: 21, isToday: false },
-    { day: "Today", date: 22, isToday: true },
-    { day: "Thu", date: 23, isToday: false },
-    { day: "Fri", date: 24, isToday: false },
+    { day: "Mon", date: 20 },
+    { day: "Tue", date: 21 },
+    { day: "Today", date: 22 },
+    { day: "Thu", date: 23 },
+    { day: "Fri", date: 24 },
   ];
 
   const upcomingWalks = [
@@ -73,6 +73,8 @@ export default function OwnerWalks() {
       location: "Riverside Walk",
     },
   ];
+  const pastWalks: typeof upcomingWalks = [];
+  const visibleWalks = selectedTab === "upcoming" ? upcomingWalks : pastWalks;
 
   return (
     <ScrollView
@@ -104,37 +106,40 @@ export default function OwnerWalks() {
         className="mb-4"
         contentContainerStyle={{ paddingHorizontal: 24 }}
       >
-        {weekDays.map((item, index) => (
-          <TouchableOpacity
-            key={index}
-            onPress={() => setSelectedDate(index)}
-            className="items-center justify-center mr-3 rounded-2xl"
-            style={{
-              width: 70,
-              height: 85,
-              backgroundColor: item.isToday ? Colors.owner.primary : "white",
-            }}
-          >
-            <Text
-              className="text-sm font-medium mb-1"
-              style={{ color: item.isToday ? "white" : "#6b7280" }}
+        {weekDays.map((item, index) => {
+          const isSelected = index === selectedDate;
+          return (
+            <TouchableOpacity
+              key={index}
+              onPress={() => setSelectedDate(index)}
+              className="items-center justify-center mr-3 rounded-2xl"
+              style={{
+                width: 70,
+                height: 85,
+                backgroundColor: isSelected ? Colors.owner.primary : "white",
+              }}
             >
-              {item.day}
-            </Text>
-            <Text
-              className="text-2xl font-bold"
-              style={{ color: item.isToday ? "white" : "#111827" }}
-            >
-              {item.date}
-            </Text>
-            {item.isToday && (
-              <View
-                className="absolute -top-1 -right-1 w-3 h-3 rounded-full"
-                style={{ backgroundColor: "#ef4444" }}
-              />
-            )}
-          </TouchableOpacity>
-        ))}
+              <Text
+                className="text-sm font-medium mb-1"
+                style={{ color: isSelected ? "white" : "#6b7280" }}
+              >
+                {item.day}
+              </Text>
+              <Text
+                className="text-2xl font-bold"
+                style={{ color: isSelected ? "white" : "#111827" }}
+              >
+                {item.date}
+              </Text>
+              {isSelected && (
+                <View
+                  className="absolute -top-1 -right-1 w-3 h-3 rounded-full"
+                  style={{ backgroundColor: "#ef4444" }}
+                />
+              )}
+            </TouchableOpacity>
+          );
+        })}
       </ScrollView>
 
       {/* Tab Switcher */}
@@ -181,175 +186,185 @@ export default function OwnerWalks() {
 
       {/* Walk Cards */}
       <Animated.View style={{ opacity: fadeAnim }} className="px-6 pb-6">
-        {upcomingWalks.map((walk) => (
-          <View
-            key={walk.id}
-            className="bg-white rounded-3xl p-5 mb-4"
-            style={{
-              shadowColor: "#000",
-              shadowOffset: { width: 0, height: 2 },
-              shadowOpacity: 0.06,
-              shadowRadius: 12,
-              elevation: 3,
-            }}
-          >
-            {/* Status Banner */}
-            {walk.status === "in-progress" && (
-              <View
-                className="absolute top-0 left-0 right-0 h-1 rounded-t-3xl"
-                style={{ backgroundColor: "#10b981" }}
-              />
-            )}
-
-            {/* Walker Info */}
-            <View className="flex-row items-center mb-4">
-              <View
-                className="w-14 h-14 rounded-full items-center justify-center mr-3"
-                style={{ backgroundColor: Colors.owner.background }}
-              >
-                <Ionicons
-                  name="person"
-                  size={26}
-                  color={Colors.owner.primary}
-                />
-              </View>
-              <View className="flex-1">
-                <Text className="font-bold text-lg text-gray-900">
-                  {walk.walker}
-                </Text>
-                <View className="flex-row items-center">
-                  <Ionicons name="star" size={14} color="#fbbf24" />
-                  <Text className="text-gray-600 text-sm ml-1">
-                    {walk.rating} ({walk.reviews})
-                  </Text>
-                </View>
-              </View>
+        {visibleWalks.length === 0 ? (
+          <View className="py-12 items-center">
+            <Text className="text-gray-500">No {selectedTab} walks</Text>
+          </View>
+        ) : (
+          visibleWalks.map((walk) => (
+            <View
+              key={walk.id}
+              className="bg-white rounded-3xl p-5 mb-4"
+              style={{
+                shadowColor: "#000",
+                shadowOffset: { width: 0, height: 2 },
+                shadowOpacity: 0.06,
+                shadowRadius: 12,
+                elevation: 3,
+              }}
+            >
+              {/* Status Banner */}
               {walk.status === "in-progress" && (
-                <Animated.View
-                  style={{
-                    transform: [{ scale: pulseAnim }],
-                    backgroundColor: "#10b981",
-                  }}
-                  className="px-3 py-1.5 rounded-full"
-                >
-                  <Text className="text-white text-xs font-bold">Live</Text>
-                </Animated.View>
-              )}
-              {walk.status === "confirmed" && (
                 <View
-                  className="px-3 py-1.5 rounded-full"
+                  className="absolute top-0 left-0 right-0 h-1 rounded-t-3xl"
+                  style={{ backgroundColor: "#10b981" }}
+                />
+              )}
+
+              {/* Walker Info */}
+              <View className="flex-row items-center mb-4">
+                <View
+                  className="w-14 h-14 rounded-full items-center justify-center mr-3"
                   style={{ backgroundColor: Colors.owner.background }}
                 >
-                  <Text
-                    className="text-xs font-bold"
-                    style={{ color: Colors.owner.primary }}
-                  >
-                    Confirmed
+                  <Ionicons
+                    name="person"
+                    size={26}
+                    color={Colors.owner.primary}
+                  />
+                </View>
+                <View className="flex-1">
+                  <Text className="font-bold text-lg text-gray-900">
+                    {walk.walker}
                   </Text>
+                  <View className="flex-row items-center">
+                    <Ionicons name="star" size={14} color="#fbbf24" />
+                    <Text className="text-gray-600 text-sm ml-1">
+                      {walk.rating} ({walk.reviews})
+                    </Text>
+                  </View>
                 </View>
-              )}
-            </View>
-
-            {/* Walk Details */}
-            <View className="space-y-3 mb-4">
-              <View className="flex-row items-center">
-                <View
-                  className="w-9 h-9 rounded-full items-center justify-center mr-3"
-                  style={{ backgroundColor: Colors.owner.background }}
-                >
-                  <Ionicons name="paw" size={16} color={Colors.owner.primary} />
-                </View>
-                <Text className="text-gray-700 font-medium flex-1">
-                  {walk.dog}
-                </Text>
-              </View>
-
-              <View className="flex-row items-center">
-                <View
-                  className="w-9 h-9 rounded-full items-center justify-center mr-3"
-                  style={{ backgroundColor: Colors.owner.background }}
-                >
-                  <Ionicons
-                    name="time"
-                    size={16}
-                    color={Colors.owner.primary}
-                  />
-                </View>
-                <Text className="text-gray-700 flex-1">
-                  {walk.time} • {walk.duration} min
-                </Text>
-              </View>
-
-              <View className="flex-row items-center">
-                <View
-                  className="w-9 h-9 rounded-full items-center justify-center mr-3"
-                  style={{ backgroundColor: Colors.owner.background }}
-                >
-                  <Ionicons
-                    name="location"
-                    size={16}
-                    color={Colors.owner.primary}
-                  />
-                </View>
-                <Text className="text-gray-700 flex-1">{walk.location}</Text>
-              </View>
-            </View>
-
-            {/* Action Buttons */}
-            <View className="flex-row gap-3">
-              {walk.status === "in-progress" ? (
-                <>
-                  <TouchableOpacity
-                    className="flex-1 py-3.5 rounded-xl items-center"
-                    style={{ backgroundColor: Colors.owner.primary }}
+                {walk.status === "in-progress" && (
+                  <Animated.View
+                    style={{
+                      transform: [{ scale: pulseAnim }],
+                      backgroundColor: "#10b981",
+                    }}
+                    className="px-3 py-1.5 rounded-full"
                   >
-                    <View className="flex-row items-center">
-                      <Ionicons name="navigate" size={18} color="white" />
-                      <Text className="text-white font-bold ml-2">
-                        Track Live
-                      </Text>
-                    </View>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    className="w-12 h-12 items-center justify-center rounded-xl"
+                    <Text className="text-white text-xs font-bold">Live</Text>
+                  </Animated.View>
+                )}
+                {walk.status === "confirmed" && (
+                  <View
+                    className="px-3 py-1.5 rounded-full"
+                    style={{ backgroundColor: Colors.owner.background }}
+                  >
+                    <Text
+                      className="text-xs font-bold"
+                      style={{ color: Colors.owner.primary }}
+                    >
+                      Confirmed
+                    </Text>
+                  </View>
+                )}
+              </View>
+
+              {/* Walk Details */}
+              <View className="space-y-3 mb-4">
+                <View className="flex-row items-center">
+                  <View
+                    className="w-9 h-9 rounded-full items-center justify-center mr-3"
                     style={{ backgroundColor: Colors.owner.background }}
                   >
                     <Ionicons
-                      name="chatbubble"
-                      size={18}
+                      name="paw"
+                      size={16}
                       color={Colors.owner.primary}
                     />
-                  </TouchableOpacity>
-                </>
-              ) : (
-                <>
-                  <TouchableOpacity
-                    className="flex-1 py-3.5 rounded-xl items-center border-2"
-                    style={{ borderColor: Colors.owner.primary }}
-                  >
-                    <Text
-                      className="font-bold"
-                      style={{ color: Colors.owner.primary }}
-                    >
-                      Details
-                    </Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    className="flex-1 py-3.5 rounded-xl items-center"
+                  </View>
+                  <Text className="text-gray-700 font-medium flex-1">
+                    {walk.dog}
+                  </Text>
+                </View>
+
+                <View className="flex-row items-center">
+                  <View
+                    className="w-9 h-9 rounded-full items-center justify-center mr-3"
                     style={{ backgroundColor: Colors.owner.background }}
                   >
-                    <Text
-                      className="font-bold"
-                      style={{ color: Colors.owner.primary }}
+                    <Ionicons
+                      name="time"
+                      size={16}
+                      color={Colors.owner.primary}
+                    />
+                  </View>
+                  <Text className="text-gray-700 flex-1">
+                    {walk.time} • {walk.duration} min
+                  </Text>
+                </View>
+
+                <View className="flex-row items-center">
+                  <View
+                    className="w-9 h-9 rounded-full items-center justify-center mr-3"
+                    style={{ backgroundColor: Colors.owner.background }}
+                  >
+                    <Ionicons
+                      name="location"
+                      size={16}
+                      color={Colors.owner.primary}
+                    />
+                  </View>
+                  <Text className="text-gray-700 flex-1">{walk.location}</Text>
+                </View>
+              </View>
+
+              {/* Action Buttons */}
+              <View className="flex-row gap-3">
+                {walk.status === "in-progress" ? (
+                  <>
+                    <TouchableOpacity
+                      className="flex-1 py-3.5 rounded-xl items-center"
+                      style={{ backgroundColor: Colors.owner.primary }}
                     >
-                      Message
-                    </Text>
-                  </TouchableOpacity>
-                </>
-              )}
+                      <View className="flex-row items-center">
+                        <Ionicons name="navigate" size={18} color="white" />
+                        <Text className="text-white font-bold ml-2">
+                          Track Live
+                        </Text>
+                      </View>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      className="w-12 h-12 items-center justify-center rounded-xl"
+                      style={{ backgroundColor: Colors.owner.background }}
+                    >
+                      <Ionicons
+                        name="chatbubble"
+                        size={18}
+                        color={Colors.owner.primary}
+                      />
+                    </TouchableOpacity>
+                  </>
+                ) : (
+                  <>
+                    <TouchableOpacity
+                      className="flex-1 py-3.5 rounded-xl items-center border-2"
+                      style={{ borderColor: Colors.owner.primary }}
+                    >
+                      <Text
+                        className="font-bold"
+                        style={{ color: Colors.owner.primary }}
+                      >
+                        Details
+                      </Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      className="flex-1 py-3.5 rounded-xl items-center"
+                      style={{ backgroundColor: Colors.owner.background }}
+                    >
+                      <Text
+                        className="font-bold"
+                        style={{ color: Colors.owner.primary }}
+                      >
+                        Message
+                      </Text>
+                    </TouchableOpacity>
+                  </>
+                )}
+              </View>
             </View>
-          </View>
-        ))}
+          ))
+        )}
       </Animated.View>
     </ScrollView>
   );
