@@ -3,15 +3,15 @@ import * as DocumentPicker from "expo-document-picker";
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import {
-    ActivityIndicator,
-    Alert,
-    KeyboardAvoidingView,
-    Platform,
-    ScrollView,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
+  ActivityIndicator,
+  Alert,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from "react-native";
 
 // Security feature flags
@@ -22,9 +22,8 @@ const SECURITY_FEATURES = {
 
 // Security messaging based on implemented features
 const SECURITY_COPY = {
-  encrypted: SECURITY_FEATURES.dataEncryption
-    ? "Your data is encrypted in transit and at rest using industry-standard encryption."
-    : "We take measures to protect your data during transmission.",
+  encrypted:
+    "Your data is encrypted in transit and at rest using industry-standard encryption.",
   disclaimer:
     "This information is used only for verification and payment processing.",
 } as const;

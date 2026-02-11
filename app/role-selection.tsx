@@ -151,8 +151,12 @@ export default function RoleSelection() {
               <Animated.View style={ownerCardAnimatedStyle}>
                 <AnimatedPressable
                   onPress={() => handleRoleSelect("owner")}
-                  onPressIn={() => handlePressIn("owner")}
-                  onPressOut={() => handlePressOut("owner")}
+                  onPressIn={() => {
+                    handlePressIn("owner");
+                  }}
+                  onPressOut={() => {
+                    handlePressOut("owner");
+                  }}
                   className="bg-white rounded-3xl p-6 mb-4"
                   style={styles.card}
                 >
@@ -201,8 +205,12 @@ export default function RoleSelection() {
               <Animated.View style={walkerCardAnimatedStyle}>
                 <AnimatedPressable
                   onPress={() => handleRoleSelect("walker")}
-                  onPressIn={() => handlePressIn("walker")}
-                  onPressOut={() => handlePressOut("walker")}
+                  onPressIn={() => {
+                    handlePressIn("walker");
+                  }}
+                  onPressOut={() => {
+                    handlePressOut("walker");
+                  }}
                   className="bg-white rounded-3xl p-6"
                   style={styles.card}
                 >

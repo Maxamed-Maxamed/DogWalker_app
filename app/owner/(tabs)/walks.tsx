@@ -118,7 +118,9 @@ export default function OwnerWalks() {
           return (
             <TouchableOpacity
               key={index}
-              onPress={() => setSelectedDate(index)}
+              onPress={() => {
+                setSelectedDate(index);
+              }}
               className="items-center justify-center mr-3 rounded-2xl"
               style={{
                 width: 70,
@@ -153,7 +155,9 @@ export default function OwnerWalks() {
       <View className="px-6 mb-4">
         <View className="flex-row bg-white rounded-2xl p-1">
           <TouchableOpacity
-            onPress={() => setSelectedTab("upcoming")}
+            onPress={() => {
+              setSelectedTab("upcoming");
+            }}
             className="flex-1 py-3 rounded-xl items-center"
             style={{
               backgroundColor:
@@ -172,7 +176,9 @@ export default function OwnerWalks() {
             </Text>
           </TouchableOpacity>
           <TouchableOpacity
-            onPress={() => setSelectedTab("past")}
+            onPress={() => {
+              setSelectedTab("past");
+            }}
             className="flex-1 py-3 rounded-xl items-center"
             style={{
               backgroundColor:

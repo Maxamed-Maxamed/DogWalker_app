@@ -117,7 +117,11 @@ export default function OwnerHome() {
             className="flex-1 ml-3 text-base"
           />
           {searchQuery.length > 0 && (
-            <TouchableOpacity onPress={() => setSearchQuery("")}>
+            <TouchableOpacity
+              onPress={() => {
+                setSearchQuery("");
+              }}
+            >
               <Ionicons name="close-circle" size={20} color="#9ca3af" />
             </TouchableOpacity>
           )}
@@ -139,11 +143,11 @@ export default function OwnerHome() {
             {QUICK_FILTERS.map((filter, index) => (
               <TouchableOpacity
                 key={index}
-                onPress={() =>
+                onPress={() => {
                   setSelectedFilter(
                     selectedFilter === filter.label ? null : filter.label,
-                  )
-                }
+                  );
+                }}
                 className="mr-3 px-4 py-3 rounded-full flex-row items-center"
                 style={{
                   backgroundColor:

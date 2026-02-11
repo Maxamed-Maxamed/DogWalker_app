@@ -18,12 +18,12 @@ import React, {
 } from "react";
 import type { User, UserRole } from "../types";
 import {
+  clearAllAuthData,
   removeAuthToken,
   removeUserData,
   saveAuthToken,
-  saveUserData,
   saveRefreshToken,
-  clearAllAuthData,
+  saveUserData,
 } from "../utils/storage";
 
 // ============================================================================
@@ -38,18 +38,18 @@ const SECURITY_CONFIG = {
 
 const SANITIZED_ERRORS: Record<string, string> = {
   "Invalid login credentials": "Invalid email or password",
-  "invalid_credentials": "Invalid email or password",
+  invalid_credentials: "Invalid email or password",
   "User not found": "Invalid email or password",
-  "invalid_grant": "Invalid email or password",
+  invalid_grant: "Invalid email or password",
   "Email not confirmed": "Please confirm your email before logging in",
-  "invalid_request_uri": "Authentication error occurred",
+  invalid_request_uri: "Authentication error occurred",
   "User already registered": "This email is already registered",
-  "user_exists": "This email is already registered",
+  user_exists: "This email is already registered",
   "Password should be at least 6 characters":
     "Password must be at least 6 characters",
-  "password_too_short": "Password must be at least 6 characters",
+  password_too_short: "Password must be at least 6 characters",
   "Invalid JSON in session": "Session expired. Please log in again",
-  "session_not_found": "Session expired. Please log in again",
+  session_not_found: "Session expired. Please log in again",
 };
 
 // ============================================================================
@@ -83,10 +83,15 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 // ============================================================================
 
 const sanitizeAuthError = (message: string): string => {
-  const sanitized =
-    SANITIZED_ERRORS[message] ||
-    SANITIZED_ERRORS[message.toLowerCase()] ||
-    "Authentication failed. Please try again.";
+  let sanitized = "Authentication failed. Please try again.";
+  if (Object.prototype.hasOwnProperty.call(SANITIZED_ERRORS, message)) {
+    sanitized = SANITIZED_ERRORS[message];
+  } else {
+    const lowerMessage = message.toLowerCase();
+    if (Object.prototype.hasOwnProperty.call(SANITIZED_ERRORS, lowerMessage)) {
+      sanitized = SANITIZED_ERRORS[lowerMessage];
+    }
+  }
 
   console.debug("[AUTH] Error sanitized:", {
     original: message,
@@ -117,7 +122,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   const loginAttemptsRef = useRef<number>(0);
   const lastAttemptTimeRef = useRef<number>(0);
-  const tokenRefreshTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const tokenRefreshTimerRef = useRef<ReturnType<typeof setInterval> | null>(
+    null,
+  );
   const subscriptionRef = useRef<(() => void) | null>(null);
 
   const handleAuthStateChange = useCallback(
@@ -161,7 +168,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
         setError("Authentication failed. Please try again.");
       }
     },
-    []
+    [],
   );
 
   const loadUser = useCallback(async (): Promise<void> => {
@@ -250,7 +257,10 @@ export function AuthProvider({ children }: AuthProviderProps) {
       throw new Error("Too many login attempts. Please try again later.");
     }
 
-    if (now - lastAttemptTimeRef.current > SECURITY_CONFIG.LOGIN_ATTEMPT_WINDOW) {
+    if (
+      now - lastAttemptTimeRef.current >
+      SECURITY_CONFIG.LOGIN_ATTEMPT_WINDOW
+    ) {
       loginAttemptsRef.current = 0;
     }
 
@@ -263,7 +273,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       try {
         checkLoginRateLimit();
 
-        if (!email?.trim() || !password?.trim()) {
+        if (!email.trim() || !password.trim()) {
           throw new Error("Email and password are required");
         }
 
@@ -297,19 +307,20 @@ export function AuthProvider({ children }: AuthProviderProps) {
         await handleAuthStateChange(data.session);
         console.info("[AUTH] User logged in successfully");
       } catch (error) {
-        const errorMessage = error instanceof Error ? error.message : "Login failed";
+        const errorMessage =
+          error instanceof Error ? error.message : "Login failed";
         console.error("[AUTH] Login error:", errorMessage);
         setError(errorMessage);
         throw error;
       }
     },
-    [handleAuthStateChange]
+    [handleAuthStateChange],
   );
 
   const signup = useCallback(
     async (email: string, password: string, role: UserRole): Promise<void> => {
       try {
-        if (!email?.trim() || !password?.trim() || !role) {
+        if (!email.trim() || !password.trim() || !role) {
           throw new Error("Email, password, and role are required");
         }
 
@@ -356,13 +367,14 @@ export function AuthProvider({ children }: AuthProviderProps) {
           console.info("[AUTH] User signed up - email confirmation required");
         }
       } catch (error) {
-        const errorMessage = error instanceof Error ? error.message : "Signup failed";
+        const errorMessage =
+          error instanceof Error ? error.message : "Signup failed";
         console.error("[AUTH] Signup error:", errorMessage);
         setError(errorMessage);
         throw error;
       }
     },
-    [handleAuthStateChange]
+    [handleAuthStateChange],
   );
 
   const logout = useCallback(async (): Promise<void> => {
@@ -385,7 +397,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
       console.info("[AUTH] User logged out successfully");
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : "Logout failed";
+      const errorMessage =
+        error instanceof Error ? error.message : "Logout failed";
       console.error("[AUTH] Logout error:", errorMessage);
       setError(errorMessage);
       throw error;
@@ -443,13 +456,14 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
         console.info("[AUTH] User data updated successfully");
       } catch (error) {
-        const errorMessage = error instanceof Error ? error.message : "Update failed";
+        const errorMessage =
+          error instanceof Error ? error.message : "Update failed";
         console.error("[AUTH] Error updating user:", errorMessage);
         setError(errorMessage);
         throw error;
       }
     },
-    [user]
+    [user],
   );
 
   const clearError = useCallback(() => {
@@ -469,9 +483,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
   };
 
   return (
-    <AuthContext.Provider value={contextValue}>
-      {children}
-    </AuthContext.Provider>
+    <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>
   );
 }
 

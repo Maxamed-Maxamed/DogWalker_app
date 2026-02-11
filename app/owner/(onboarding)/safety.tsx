@@ -7,36 +7,40 @@ import { Animated, Text, TouchableOpacity, View } from "react-native";
 export default function Safety() {
   const router = useRouter();
 
-  // Animation values for each safety feature (simplified from individual refs)
-  const fadeAnims = useRef([0, 1, 2].map(() => new Animated.Value(0))).current;
-  const slideAnims = useRef(
-    [0, 1, 2].map(() => new Animated.Value(50))
+  // Animation values for each safety feature (paired to avoid index-based access)
+  const animValues = useRef(
+    [0, 1, 2].map(() => ({
+      fade: new Animated.Value(0),
+      slide: new Animated.Value(50),
+    })),
   ).current;
 
   useEffect(() => {
     // Stagger the animations for a cascading effect
     const animation = Animated.stagger(
       150,
-      fadeAnims.map((fade, i) =>
+      animValues.map((anim) =>
         Animated.parallel([
-          Animated.timing(fade, {
+          Animated.timing(anim.fade, {
             toValue: 1,
             duration: 500,
             useNativeDriver: true,
           }),
-          Animated.spring(slideAnims[i], {
+          Animated.spring(anim.slide, {
             toValue: 0,
             friction: 8,
             tension: 40,
             useNativeDriver: true,
           }),
-        ])
-      )
+        ]),
+      ),
     );
     animation.start();
 
-    return () => animation.stop();
-  }, [fadeAnims, slideAnims]);
+    return () => {
+      animation.stop();
+    };
+  }, [animValues]);
 
   const safetyFeatures = [
     {
@@ -44,22 +48,22 @@ export default function Safety() {
       title: "Verified Walkers",
       description:
         "Background checks and identity verification for all walkers",
-      fadeAnim: fadeAnims[0],
-      slideAnim: slideAnims[0],
+      fadeAnim: animValues[0].fade,
+      slideAnim: animValues[0].slide,
     },
     {
       iconId: "41445", // Map Pin/GPS icon from Icons8 (ios7)
       title: "Live GPS Tracking",
       description: "Real-time location tracking during every walk",
-      fadeAnim: fadeAnims[1],
-      slideAnim: slideAnims[1],
+      fadeAnim: animValues[1].fade,
+      slideAnim: animValues[1].slide,
     },
     {
       iconId: "74241", // Insurance/Document icon from Icons8 (ios7)
       title: "Insurance Protection",
       description: "Comprehensive coverage for every walk",
-      fadeAnim: fadeAnims[2],
-      slideAnim: slideAnims[2],
+      fadeAnim: animValues[2].fade,
+      slideAnim: animValues[2].slide,
     },
   ];
 
