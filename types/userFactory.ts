@@ -2,12 +2,21 @@
  * User factory utilities for creating typed user objects
  */
 
-import type {
-  Owner,
-  Walker,
-  User,
-  WeeklySchedule,
-} from "../types";
+import type { Owner, User, Walker, WeeklySchedule } from "../types";
+
+interface SupabaseUserData {
+  id: string;
+  email: string;
+  created_at: string;
+  user_metadata?: {
+    firstName?: string;
+    lastName?: string;
+    phone?: string;
+    photoUrl?: string;
+    [key: string]: unknown;
+  };
+  [key: string]: unknown;
+}
 
 /**
  * Creates an empty weekly schedule
@@ -31,24 +40,25 @@ export const createEmptySchedule = (): WeeklySchedule => {
  * @returns A new Owner object
  * @throws Error if required fields are missing
  */
-export const createOwner = (supabaseUser: any): Owner => {
-  if (!supabaseUser?.id || !supabaseUser?.email) {
+export const createOwner = (supabaseUser: unknown): Owner => {
+  const u = supabaseUser as SupabaseUserData | null | undefined;
+  if (!u?.id || !u?.email) {
     throw new Error("Invalid Supabase user object: missing id or email");
   }
 
-  const createdAtDate = new Date(supabaseUser.created_at);
+  const createdAtDate = new Date(u.created_at);
   if (Number.isNaN(createdAtDate.getTime())) {
     throw new Error("Invalid createdAt timestamp");
   }
 
   const owner: Owner = {
-    id: supabaseUser.id,
-    email: supabaseUser.email,
+    id: u.id,
+    email: u.email,
     role: "owner" as const,
-    firstName: supabaseUser.user_metadata?.firstName,
-    lastName: supabaseUser.user_metadata?.lastName,
-    phone: supabaseUser.user_metadata?.phone,
-    photoUrl: supabaseUser.user_metadata?.photoUrl,
+    firstName: u.user_metadata?.firstName,
+    lastName: u.user_metadata?.lastName,
+    phone: u.user_metadata?.phone,
+    photoUrl: u.user_metadata?.photoUrl,
     createdAt: createdAtDate,
     onboardingStatus: "not_started" as const,
     setupStatus: "not_started" as const,
@@ -66,24 +76,25 @@ export const createOwner = (supabaseUser: any): Owner => {
  * @returns A new Walker object
  * @throws Error if required fields are missing
  */
-export const createWalker = (supabaseUser: any): Walker => {
-  if (!supabaseUser?.id || !supabaseUser?.email) {
+export const createWalker = (supabaseUser: unknown): Walker => {
+  const u = supabaseUser as SupabaseUserData | null | undefined;
+  if (!u?.id || !u?.email) {
     throw new Error("Invalid Supabase user object: missing id or email");
   }
 
-  const createdAtDate = new Date(supabaseUser.created_at);
+  const createdAtDate = new Date(u.created_at);
   if (Number.isNaN(createdAtDate.getTime())) {
     throw new Error("Invalid createdAt timestamp");
   }
 
   const walker: Walker = {
-    id: supabaseUser.id,
-    email: supabaseUser.email,
+    id: u.id,
+    email: u.email,
     role: "walker" as const,
-    firstName: supabaseUser.user_metadata?.firstName,
-    lastName: supabaseUser.user_metadata?.lastName,
-    phone: supabaseUser.user_metadata?.phone,
-    photoUrl: supabaseUser.user_metadata?.photoUrl,
+    firstName: u.user_metadata?.firstName,
+    lastName: u.user_metadata?.lastName,
+    phone: u.user_metadata?.phone,
+    photoUrl: u.user_metadata?.photoUrl,
     createdAt: createdAtDate,
     onboardingStatus: "not_started" as const,
     setupStatus: "not_started" as const,
@@ -110,10 +121,11 @@ export const createWalker = (supabaseUser: any): Walker => {
  * @throws Error if role is invalid or user data is invalid
  */
 export const mapSupabaseUserToAppUser = (
-  supabaseUser: any,
+  supabaseUser: unknown,
   role: string,
 ): User => {
-  if (!supabaseUser?.id || !supabaseUser?.email) {
+  const u = supabaseUser as SupabaseUserData | null | undefined;
+  if (!u?.id || !u?.email) {
     throw new Error("Invalid Supabase user object");
   }
 

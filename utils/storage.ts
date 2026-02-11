@@ -219,7 +219,7 @@ export const removeUserRole = async (): Promise<void> => {
  * 
  * @param userData - User profile object
  */
-export const saveUserData = async (userData: any): Promise<void> => {
+export const saveUserData = async (userData: unknown): Promise<void> => {
   try {
     await AsyncStorage.setItem(
       STORAGE_KEYS.USER_DATA,
@@ -237,7 +237,7 @@ export const saveUserData = async (userData: any): Promise<void> => {
  * 
  * @returns User data object or null
  */
-export const getUserData = async (): Promise<any | null> => {
+export const getUserData = async (): Promise<unknown | null> => {
   try {
     const data = await AsyncStorage.getItem(STORAGE_KEYS.USER_DATA);
     return data ? JSON.parse(data) : null;

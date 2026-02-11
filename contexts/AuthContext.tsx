@@ -87,11 +87,11 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 const sanitizeAuthError = (message: string): string => {
   let sanitized = "Authentication failed. Please try again.";
   if (SANITIZED_ERRORS.has(message)) {
-    sanitized = SANITIZED_ERRORS.get(message)!;
+    sanitized = SANITIZED_ERRORS.get(message) ?? sanitized;
   } else {
     const lowerMessage = message.toLowerCase();
     if (SANITIZED_ERRORS.has(lowerMessage)) {
-      sanitized = SANITIZED_ERRORS.get(lowerMessage)!;
+      sanitized = SANITIZED_ERRORS.get(lowerMessage) ?? sanitized;
     }
   }
 
