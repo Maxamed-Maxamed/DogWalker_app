@@ -1,18 +1,27 @@
 import { Colors } from "@/constants/theme";
+import { useAuth } from "@/contexts/AuthContext";
 import { useRole } from "@/contexts/RoleContext";
 import { MaterialIcons } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
-import { Image, Pressable, StyleSheet, Text, View } from "react-native";
+import { useEffect } from "react";
+import {
+    ActivityIndicator,
+    Image,
+    Pressable,
+    StyleSheet,
+    Text,
+    View,
+} from "react-native";
 import Animated, {
-  FadeIn,
-  FadeInDown,
-  FadeInUp,
-  RotateInDownLeft,
-  useAnimatedStyle,
-  useSharedValue,
-  withSpring
+    FadeIn,
+    FadeInDown,
+    FadeInUp,
+    RotateInDownLeft,
+    useAnimatedStyle,
+    useSharedValue,
+    withSpring,
 } from "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -21,7 +30,51 @@ const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 export default function RoleSelection() {
   const router = useRouter();
-  const { setRole } = useRole();
+  const { role, setRole, isLoading: roleLoading } = useRole();
+  const { isAuthenticated, isLoading: authLoading } = useAuth();
+
+  // Redirect if user already has a role selected
+  useEffect(() => {
+    if (!roleLoading && !authLoading && role) {
+      if (isAuthenticated) {
+        router.replace(`/${role}/(tabs)/home`);
+      } else {
+        router.replace(`/${role}/splash`);
+      }
+    }
+  }, [roleLoading, authLoading, role, isAuthenticated]);
+
+  // Show loading while checking stored role
+  if (roleLoading || authLoading) {
+    return (
+      <View
+        style={{
+          flex: 1,
+          alignItems: "center",
+          justifyContent: "center",
+          backgroundColor: "#2563eb",
+        }}
+      >
+        <ActivityIndicator size="large" color="#ffffff" />
+      </View>
+    );
+  }
+
+  // If role is set, we're redirecting — show nothing
+  if (role) {
+    return (
+      <View
+        style={{
+          flex: 1,
+          alignItems: "center",
+          justifyContent: "center",
+          backgroundColor: "#2563eb",
+        }}
+      >
+        <ActivityIndicator size="large" color="#ffffff" />
+      </View>
+    );
+  }
   const ownerCardScale = useSharedValue(1);
   const walkerCardScale = useSharedValue(1);
 
@@ -69,14 +122,21 @@ export default function RoleSelection() {
           </Animated.View>
 
           {/* Headings */}
-          <Animated.View entering={FadeInUp.delay(200).duration(500).springify()}>
+          <Animated.View
+            entering={FadeInUp.delay(200).duration(500).springify()}
+          >
             <Text className="text-white text-4xl font-bold text-center mb-3">
               Choose Your Role
             </Text>
           </Animated.View>
 
-          <Animated.View entering={FadeInUp.delay(300).duration(500).springify()}>
-            <Text className="text-white text-base text-center mb-10" style={styles.subtitle}>
+          <Animated.View
+            entering={FadeInUp.delay(300).duration(500).springify()}
+          >
+            <Text
+              className="text-white text-base text-center mb-10"
+              style={styles.subtitle}
+            >
               Select how you want to use DogWalker
             </Text>
           </Animated.View>
@@ -124,8 +184,8 @@ export default function RoleSelection() {
                         Find & book dog walkers
                       </Text>
                       <Text className="text-sm text-gray-600 leading-5">
-                        Book trusted dog walkers, track walks in real-time, and keep
-                        your furry friend happy and healthy.
+                        Book trusted dog walkers, track walks in real-time, and
+                        keep your furry friend happy and healthy.
                       </Text>
                     </View>
                   </View>
@@ -174,8 +234,8 @@ export default function RoleSelection() {
                         Earn money walking dogs
                       </Text>
                       <Text className="text-sm text-gray-600 leading-5">
-                        Set your schedule, walk adorable dogs, earn money, and build
-                        a reputation as a trusted professional.
+                        Set your schedule, walk adorable dogs, earn money, and
+                        build a reputation as a trusted professional.
                       </Text>
                     </View>
                   </View>
@@ -186,7 +246,10 @@ export default function RoleSelection() {
 
           {/* Bottom Note */}
           <Animated.View entering={FadeIn.delay(700).duration(400)}>
-            <Text className="text-white text-center text-sm mt-8" style={styles.bottomNote}>
+            <Text
+              className="text-white text-center text-sm mt-8"
+              style={styles.bottomNote}
+            >
               You can switch roles anytime in settings
             </Text>
           </Animated.View>

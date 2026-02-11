@@ -46,3 +46,4 @@ app-example
 #Ignore insiders AI rules
 .claude/prompt/appskills.prompts.md
 .github/instructions/codacy.instructions.md
+.github/copilot-instructions.md
