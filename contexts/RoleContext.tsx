@@ -69,7 +69,7 @@ export function RoleProvider({ children }: { children: ReactNode }) {
    * Effect: Load role on component mount
    */
   useEffect(() => {
-    loadRole();
+    void loadRole();
   }, [loadRole]);
 
   /**

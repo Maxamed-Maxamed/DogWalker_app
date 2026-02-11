@@ -36,21 +36,20 @@ const SECURITY_CONFIG = {
   TOKEN_REFRESH_INTERVAL: 5 * 60 * 1000,
 };
 
-const SANITIZED_ERRORS: Record<string, string> = {
-  "Invalid login credentials": "Invalid email or password",
-  invalid_credentials: "Invalid email or password",
-  "User not found": "Invalid email or password",
-  invalid_grant: "Invalid email or password",
-  "Email not confirmed": "Please confirm your email before logging in",
-  invalid_request_uri: "Authentication error occurred",
-  "User already registered": "This email is already registered",
-  user_exists: "This email is already registered",
-  "Password should be at least 6 characters":
-    "Password must be at least 6 characters",
-  password_too_short: "Password must be at least 6 characters",
-  "Invalid JSON in session": "Session expired. Please log in again",
-  session_not_found: "Session expired. Please log in again",
-};
+const SANITIZED_ERRORS = new Map<string, string>([
+  ["Invalid login credentials", "Invalid email or password"],
+  ["invalid_credentials", "Invalid email or password"],
+  ["User not found", "Invalid email or password"],
+  ["invalid_grant", "Invalid email or password"],
+  ["Email not confirmed", "Please confirm your email before logging in"],
+  ["invalid_request_uri", "Authentication error occurred"],
+  ["User already registered", "This email is already registered"],
+  ["user_exists", "This email is already registered"],
+  ["Password should be at least 6 characters", "Password must be at least 6 characters"],
+  ["password_too_short", "Password must be at least 6 characters"],
+  ["Invalid JSON in session", "Session expired. Please log in again"],
+  ["session_not_found", "Session expired. Please log in again"],
+]);
 
 // ============================================================================
 // TYPES
@@ -84,12 +83,12 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 const sanitizeAuthError = (message: string): string => {
   let sanitized = "Authentication failed. Please try again.";
-  if (Object.prototype.hasOwnProperty.call(SANITIZED_ERRORS, message)) {
-    sanitized = SANITIZED_ERRORS[message];
+  if (SANITIZED_ERRORS.has(message)) {
+    sanitized = SANITIZED_ERRORS.get(message)!;
   } else {
     const lowerMessage = message.toLowerCase();
-    if (Object.prototype.hasOwnProperty.call(SANITIZED_ERRORS, lowerMessage)) {
-      sanitized = SANITIZED_ERRORS[lowerMessage];
+    if (SANITIZED_ERRORS.has(lowerMessage)) {
+      sanitized = SANITIZED_ERRORS.get(lowerMessage)!;
     }
   }
 
@@ -101,10 +100,16 @@ const sanitizeAuthError = (message: string): string => {
   return sanitized;
 };
 
-const isValidSession = (session: any): boolean => {
-  if (!session?.expires_at) return false;
+const isValidSession = (session: unknown): boolean => {
+  if (
+    typeof session !== "object" ||
+    session === null ||
+    !("expires_at" in session)
+  ) {
+    return false;
+  }
   const now = Math.floor(Date.now() / 1000);
-  return session.expires_at > now;
+  return (session as { expires_at: number }).expires_at > now;
 };
 
 // ============================================================================
@@ -128,7 +133,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const subscriptionRef = useRef<(() => void) | null>(null);
 
   const handleAuthStateChange = useCallback(
-    async (session: any): Promise<void> => {
+    async (session: unknown): Promise<void> => {
       try {
         if (!session || !isValidSession(session)) {
           setUser(null);
@@ -136,7 +141,13 @@ export function AuthProvider({ children }: AuthProviderProps) {
           return;
         }
 
-        const supabaseUser = session.user;
+        const s = session as {
+          user: { user_metadata?: SupabaseUserMetadata; [key: string]: unknown };
+          access_token: string;
+          refresh_token?: string;
+        };
+
+        const supabaseUser = s.user;
         const userRole = supabaseUser.user_metadata?.role;
 
         if (!isValidUserRole(userRole)) {
@@ -150,9 +161,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
         const userData = mapSupabaseUserToAppUser(supabaseUser, userRole);
 
-        await saveAuthToken(session.access_token);
-        if (session.refresh_token) {
-          await saveRefreshToken(session.refresh_token);
+        await saveAuthToken(s.access_token);
+        if (s.refresh_token) {
+          await saveRefreshToken(s.refresh_token);
         }
 
         await saveUserData(userData);
@@ -224,7 +235,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
   }, [handleAuthStateChange]);
 
   useEffect(() => {
-    loadUser();
+    void loadUser();
     setupTokenRefresh();
 
     if (!supabase) {
@@ -320,7 +331,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const signup = useCallback(
     async (email: string, password: string, role: UserRole): Promise<void> => {
       try {
-        if (!email.trim() || !password.trim() || !role) {
+        if (!email.trim() || !password.trim()) {
           throw new Error("Email, password, and role are required");
         }
 
