@@ -47,3 +47,11 @@ app-example
 .claude/prompt/appskills.prompts.md
 .github/instructions/codacy.instructions.md
 .github/copilot-instructions.md
+
+# Virtual Environment
+venv/
+
+# Python
+__pycache__/
+*.pyc
+*.egg-info/
