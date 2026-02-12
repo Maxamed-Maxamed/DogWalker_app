@@ -24,6 +24,8 @@ on:
 
 permissions:
   contents: read
+  security-events: write # allow SARIF upload to code scanning
+  actions: read # required for upload-sarif to read run status on private repos
 
 jobs:
   codacy-security-scan:
