@@ -45,3 +45,10 @@ app-example
 
 #Ignore insiders AI rules
 .github\instructions\codacy.instructions.md
+
+# Python virtual environment
+venv/
+
+# Local AI / tooling
+.claude/
+.github/copilot-instructions.md
