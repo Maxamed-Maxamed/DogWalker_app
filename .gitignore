@@ -46,9 +46,18 @@ app-example
 #Ignore insiders AI rules
 .github\instructions\codacy.instructions.md
 
-# Python virtual environment
-venv/
+# Ignore insiders AI rules
+.github/instructions/codacy.instructions.md
+.github/copilot-instructions.md
 
 # Local AI / tooling
 .claude/
-.github/copilot-instructions.md
+.claude/prompt/appskills.prompts.md
+
+# Python virtual environment
+venv/
+
+# Python
+__pycache__/
+*.pyc
+*.egg-info/
